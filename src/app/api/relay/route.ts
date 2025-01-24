@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-	const { port, action } = req.body
+export async function POST(req: NextRequest) {
+	const { port, action } = await req.json()
 
 	if (action === 'on') {
 		await fetch(`http://localhost:5000/relay/on`, {
@@ -11,7 +11,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 			},
 			body: JSON.stringify({ port }),
 		})
-		return res.json({ message: `Relay ${port} turned on` })
+		return NextResponse.json({ message: `Relay ${port} turned on` })
 	} else if (action === 'off') {
 		await fetch(`http://localhost:5000/relay/off`, {
 			method: 'POST',
@@ -20,7 +20,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 			},
 			body: JSON.stringify({ port }),
 		})
-		return res.json({ message: `Relay ${port} turned off` })
+		return NextResponse.json({ message: `Relay ${port} turned off` })
 	} else if (action === 'temporary_on') {
 		await fetch(`http://localhost:5000/relay/temporary_on`, {
 			method: 'POST',
@@ -29,10 +29,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 			},
 			body: JSON.stringify({ port }),
 		})
-		return res.json({
+		return NextResponse.json({
 			message: `Relay ${port} turned on for 15 seconds`,
 		})
 	} else {
-		return res.status(400).json({ message: 'Invalid action' })
+		return NextResponse.json({ message: 'Invalid action' }, { status: 400 })
 	}
 }
