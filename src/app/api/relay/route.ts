@@ -1,46 +1,38 @@
-// pages/api/relay.js
 import { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
-	if (req.method === 'POST') {
-		const { port, action } = req.body
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
+	const { port, action } = req.body
 
-		if (action === 'on') {
-			await fetch(`http://localhost:5000/relay/on`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ port }),
-			})
-			res.status(200).json({ message: `Relay ${port} turned on` })
-		} else if (action === 'off') {
-			await fetch(`http://localhost:5000/relay/off`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ port }),
-			})
-			res.status(200).json({ message: `Relay ${port} turned off` })
-		} else if (action === 'temporary_on') {
-			await fetch(`http://localhost:5000/relay/temporary_on`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ port }),
-			})
-			res
-				.status(200)
-				.json({ message: `Relay ${port} turned on for 15 seconds` })
-		} else {
-			res.status(400).json({ message: 'Invalid action' })
-		}
+	if (action === 'on') {
+		await fetch(`http://localhost:5000/relay/on`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ port }),
+		})
+		return res.json({ message: `Relay ${port} turned on` })
+	} else if (action === 'off') {
+		await fetch(`http://localhost:5000/relay/off`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ port }),
+		})
+		return res.json({ message: `Relay ${port} turned off` })
+	} else if (action === 'temporary_on') {
+		await fetch(`http://localhost:5000/relay/temporary_on`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ port }),
+		})
+		return res.json({
+			message: `Relay ${port} turned on for 15 seconds`,
+		})
 	} else {
-		res.status(405).json({ message: 'Method Not Allowed' })
+		return res.status(400).json({ message: 'Invalid action' })
 	}
 }
