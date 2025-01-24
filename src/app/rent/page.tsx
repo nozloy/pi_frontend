@@ -25,7 +25,6 @@ export default function Rent() {
 	const checkCode = async (code: number) => {
 		const result = await checkRentCode(code)
 		if (result) {
-			alert('Код верный, ячейка сейчас откроется')
 			turnOnRelayFor15Seconds(result.itemId)
 			console.log(result.itemId)
 		} else {
