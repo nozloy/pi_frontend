@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
 	const { port, action } = await req.json()
-
+	console.log(port, action)
 	if (action === 'on') {
 		await fetch(`http://127.0.0.1:5000/relay/on`, {
 			method: 'POST',

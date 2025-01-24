@@ -27,6 +27,7 @@ export default function Rent() {
 		if (result) {
 			alert('Код верный, ячейка сейчас откроется')
 			turnOnRelayFor15Seconds(result.itemId)
+			console.log(result.itemId)
 		} else {
 			alert('Код неверный или срок действия истек')
 		}
