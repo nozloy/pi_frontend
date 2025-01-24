@@ -12,11 +12,21 @@ import {
 import NumericKeypad from '../components/NumericKeypad'
 import { checkRentCode } from '@/lib/prisma'
 
+const turnOnRelayFor15Seconds = async (port: number) => {
+	await fetch('/api/relay', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ port, action: 'temporary_on' }),
+	})
+}
 export default function Rent() {
 	const checkCode = async (code: number) => {
 		const result = await checkRentCode(code)
 		if (result) {
 			alert('Код верный, ячейка сейчас откроется')
+			turnOnRelayFor15Seconds(result.itemId)
 		} else {
 			alert('Код неверный или срок действия истек')
 		}
