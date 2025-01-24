@@ -1,25 +1,43 @@
-import Image from 'next/image'
-import Link from 'next/link'
+'use client'
 import React from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import MenuList from './components/MenuList'
+import useAnimateNavigation from './utils/useAnimateNavigation'
+import Spinner from './components/Spinner'
+import { menus } from './constants'
 
-const menus = [
-	{ link: '/rent', caption: 'Аренда' },
-	{ link: '/kiosk', caption: 'Киоск' },
-	{ link: '/download', caption: 'Скачать приложение' },
-]
+const staggerContainer = {
+	hidden: { opacity: 0 },
+	show: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.3,
+		},
+	},
+}
 
 export default function Home() {
+	const { isExiting, handleMenuClick, handleAnimationComplete } =
+		useAnimateNavigation()
+
 	return (
-		<main className='flex min-h-screen flex-col items-center justify-between p-20 bg-slate-200'>
-			{menus.map((menu, i) => (
-				<div className='w-full'>
-					<Link key={i} href={menu.link} passHref>
-						<button className='active:bg-slate-600 bg-slate-400 shadow-2xl flex items-center justify-center mx-auto rounded-2xl w-2/3 h-32 text-center text-4xl text-white drop-shadow-md'>
-							{menu.caption}
-						</button>
-					</Link>
-				</div>
-			))}
-		</main>
+		<AnimatePresence>
+			<motion.div
+				className={`flex min-h-screen flex-col items-center justify-${
+					isExiting ? 'center' : 'between'
+				} p-20 bg-slate-200`}
+				variants={!isExiting ? staggerContainer : undefined}
+				initial='hidden'
+				animate='show'
+				exit='hidden'
+				onAnimationComplete={isExiting ? handleAnimationComplete : undefined}
+			>
+				{!isExiting ? (
+					<MenuList menus={menus} handleMenuClick={handleMenuClick} />
+				) : (
+					<Spinner />
+				)}
+			</motion.div>
+		</AnimatePresence>
 	)
 }
